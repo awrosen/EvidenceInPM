@@ -1,0 +1,60 @@
+.libPaths("C:/Packages Rstudio")
+.libPaths()
+setwd("~/Master i PM/Evidence PM")
+
+
+# Load packages -----------------------------------------------------------
+library(MKpower)
+library(swdpwr)
+
+
+# Power calculations for sensitivity --------------------------------------
+## Power of no DR vs other
+power.diagnostic.test(
+  sens = 0.82,
+  sig.level = 0.02,
+  delta = 0.05,
+  power = 0.95,
+  prev = 0.5,
+  method = "exact"
+)
+
+## Power of DR grade 1-2 vs other
+power.diagnostic.test(
+  sens = 0.82,
+  sig.level = 0.05,
+  delta = 0.02,
+  power = 0.95,
+  prev = 0.35,
+  method = "exact"
+)
+
+
+# Calculations for non-infiority ------------------------------------------
+## Calculation for swcr trial
+### Set up design in I*J format, 1 = intervention, 0 = control
+dataset = matrix(data = c(0,1,1,1,1,1,
+                          0,0,1,1,1,1,
+                          0,0,0,1,1,1,
+                          0,0,0,0,1,1,
+                          0,0,0,0,0,1),
+                 nrow = 5,
+                 ncol = 6,
+                 byrow=TRUE)
+
+swdpower(
+  K = 4800,
+  design = dataset,
+  family = "gaussian",
+  model = "marginal",
+  link = "identity",
+  type = "cohort",
+  meanresponse_start = 2.0,
+  meanresponse_end0 = 2.0,
+  meanresponse_end1 = 1.0,
+  sigma2 = 0.5,
+  typeIerror = 0.05,
+  alpha0 = 0.1,
+  alpha1 = 0.05,
+  alpha2 = 0.02
+  )
